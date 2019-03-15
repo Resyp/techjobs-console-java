@@ -1,8 +1,6 @@
 package org.launchcode.techjobs.console;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -13,7 +11,7 @@ public class TechJobs {
 
     public static void main (String[] args) {
 
-        // Initialize our field map with key/name pairs
+        // Initialize the field map with key/name pairs
         HashMap<String, String> columnChoices = new HashMap<>();
         columnChoices.put("core competency", "Skill");
         columnChoices.put("employer", "Employer");
@@ -46,6 +44,7 @@ public class TechJobs {
                     System.out.println("\n*** All " + columnChoices.get(columnChoice) + " Values ***");
 
                     // Print list of skills, employers, etc
+                    Collections.sort(results);
                     for (String item : results) {
                         System.out.println(item);
                     }
@@ -59,17 +58,24 @@ public class TechJobs {
                 // What is their search term?
                 System.out.println("\nSearch term: ");
                 String searchTerm = in.nextLine();
+                searchTerm.toLowerCase();
 
                 if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
-                } else {
+                    if (searchTerm.equals("all")){
+                        printJobs(JobData.findAll());
+                    }else{
+                        printJobs(JobData.findByValue(searchTerm));
+                    }
+                } else if (JobData.findAll(searchField).contains(searchTerm.toLowerCase())) {
                     printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
+                } else {
+                    System.out.println("\nQuery yields no results.");
                 }
             }
         }
     }
 
-    // ﻿Returns the key of the selected item from the choices Dictionary
+    // ﻿Returns the key of the selected item from the choices Dictionary(HashMap is Dictionary)
     private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
 
         Integer choiceIdx;
@@ -110,7 +116,12 @@ public class TechJobs {
 
     // Print a list of jobs
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
-
-        System.out.println("printJobs is not implemented yet");
+        for (HashMap<String,String> job : someJobs) {
+            System.out.println("*****");
+            for(Map.Entry<String, String> item : job.entrySet()){
+                System.out.println(item.getKey() + "  :  " + item.getValue());
+            }
+            System.out.println("*****\n");
+        }
     }
 }
